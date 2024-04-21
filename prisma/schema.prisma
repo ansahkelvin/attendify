@@ -14,15 +14,16 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  username      String?         @unique
-  email         String?         @unique
+  username      String?   @unique
+  email         String?   @unique
   password      String?
   emailVerified DateTime?
   image         String?
   Session       Session[]
   Account       Account?
+
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
@@ -87,4 +88,33 @@ model Authenticator {
   transports           String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Employee {
+  id            String       @id @default(cuid())
+  name          String
+  email         String
+  date          DateTime
+  role          String
+  profile_image String
+  Attendance    Attendance[]
+  salary        Int
+  departmentId  String
+  department    Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+}
+
+model Department {
+  id       String     @id @default(cuid())
+  name     String?
+  director String?
+  Employee Employee[]
+}
+
+model Attendance {
+  id           String   @id @default(cuid())
+  userId       String
+  date         DateTime
+  timeReported DateTime
+  employeeId   String
+  employee     Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 }

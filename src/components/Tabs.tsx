@@ -8,8 +8,9 @@ import {
 } from '@tremor/react';
 import PermissionRequest from "@/components/Admin/PermissionRequest";
 import Employees from "@/components/Admin/Employees";
+import {Employee} from "@prisma/client";
 
-export default function CustomTab() {
+export default function CustomTab({ data}: {data: Employee[]}) {
     return (
             <TabGroup>
                 <TabList className="mt-4">
@@ -18,7 +19,7 @@ export default function CustomTab() {
                 </TabList>
                 <TabPanels>
                     <TabPanel>
-                      <Employees/>
+                      <Employees employees = {data}/>
                     </TabPanel>
                     <TabPanel>
                        <PermissionRequest/>

@@ -38,16 +38,11 @@ export default function Sidebar() {
             isActive: route === "/admin/members",
             icon: <SlPeople/>
         },
-        // {
-        //     title: "Schedule",
-        //     link: '/admin/schedule',
-        //     isActive: route === "/admin/schedule",
-        //     icon: <CiCalendarDate/>
-        // },
+
         {
-            title: "Report",
-            link: '/admin/report',
-            isActive: route === "/admin/report",
+            title: "Department",
+            link: '/admin/department',
+            isActive: route === "/admin/department",
             icon: <HiOutlineDocumentReport/>
         },
 
