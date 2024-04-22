@@ -91,30 +91,24 @@ model Authenticator {
 }
 
 model Employee {
-  id            String       @id @default(cuid())
+  id            String @id @default(cuid())
   name          String
   email         String
-  date          DateTime
   role          String
   profile_image String
-  Attendance    Attendance[]
-  salary        Int
   departmentId  String
-  department    Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
 }
 
 model Department {
-  id       String     @id @default(cuid())
+  id       String  @id @default(cuid())
   name     String?
   director String?
-  Employee Employee[]
 }
 
 model Attendance {
   id           String   @id @default(cuid())
-  userId       String
   date         DateTime
+  name         String
+  status       String
   timeReported DateTime
-  employeeId   String
-  employee     Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 }

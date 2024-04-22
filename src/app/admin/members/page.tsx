@@ -16,6 +16,7 @@ export default function Members() {
     const [userInfo, setUserInfo] = useState({name: '', email: '', role: '', salary: '', department: '', profile_url: image})
     const [value, setValue] = useState<DatePickerValue>();
     const [employee, setEmployee] = useState<Employee[]>([])
+    const [departmentValue, setDepartmentValue] = useState('');
 
     const submitEmployee = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,7 +31,7 @@ export default function Members() {
                  name: userInfo.name,
                  role: userInfo.role,
                  profile_url: image,
-                 department: data,
+                 department: departmentValue,
                  salary: userInfo.salary,
                  date: value
 
@@ -84,6 +85,7 @@ export default function Members() {
     const fetchEmployee = async () => {
         setDataLoading(true)
         try {
+            
             const response = await fetch('/api/employee', {
                 method: 'GET',
                 headers: {
@@ -197,7 +199,10 @@ export default function Members() {
                                                    className="text-tremor-default  text-tremor-content dark:text-dark-tremor-content mb-4 ">
                                                 Salary
                                             </label>
-                                            <TextInput className="mt-4" placeholder='GHC 10000'/>
+                                            <TextInput
+                                                onChange={(e) => setUserInfo({...userInfo, salary: e.target.value})}
+                                                value={userInfo.salary}
+                                                className="mt-4" placeholder='GHC 10000'/>
 
                                         </div>
 
@@ -207,16 +212,11 @@ export default function Members() {
                                                        className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
                                                     Department
                                                 </label>
-                                                <Select className='mt-4'>
+                                                <Select value={departmentValue} onValueChange={(value) => setDepartmentValue(value)}  className='mt-4'>
                                                     {data.map((department) => {
-                                                        return <SelectItem key={department.id}
+                                                        return <SelectItem  key={department.id}
                                                                            value={department.id}>{department.name}</SelectItem>
                                                     })}
-
-                                                    {/*<SelectItem value="2">IT Department</SelectItem>*/}
-                                                    {/*<SelectItem value="3">Human Resource</SelectItem>*/}
-                                                    {/*<SelectItem value="3">Finance Department</SelectItem>*/}
-                                                    {/*<SelectItem value="3">Inventory Department</SelectItem>*/}
                                                 </Select>
                                             </div>
                                             : <div>Loading</div>}

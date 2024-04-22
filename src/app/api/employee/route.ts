@@ -3,26 +3,16 @@ import {prisma} from "@/db/prisma";
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
-    const {name, email, profile_url, salary, department, role, startDate} = body;
+    const {name, email, profile_url, department, role} = body;
 
     try {
-        const findDepartment = await prisma.department.findFirst({
-            where: {
-                name: department
-            }
-        })
-        if (!findDepartment) {
-            return NextResponse.json({message: "Error finding department"})
-        }
         const user = await prisma.employee.create({
             data: {
                 email,
                 name,
                 profile_image: profile_url,
-                salary,
-                departmentId: findDepartment.id,
+                departmentId: department,
                 role,
-                date: startDate
             }
         })
         console.log(user);
@@ -41,6 +31,16 @@ export async function GET() {
         return NextResponse.json(employee, {status: 200})
     } catch (e) {
         return NextResponse.json({error: e}, {status: 200})
+
+    }
+}
+
+    export async function DELETE(){
+    try{
+        const employee = await prisma.employee.deleteMany()
+        console.log(employee, 'employee')
+        return NextResponse.json(employee, {status: 200})
+    }catch (e) {
 
     }
 }

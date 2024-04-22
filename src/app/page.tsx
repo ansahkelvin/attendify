@@ -2,20 +2,70 @@
 import {Button} from "@tremor/react";
 import {RiCamera2Fill} from "@remixicon/react";
 import Webcam from "react-webcam";
-import {useRef} from "react";
+import {useRef, useState} from "react";
+import {Attendance} from "@/app/admin/attendance/page";
+import moment from "moment";
 
 export default function Home() {
     const webcamRef = useRef<Webcam>(null);
+    const [image, setImage] = useState('');
 
-    const capture = () => {
+
+    const [attendance, setAttendance] = useState<Attendance[]>([]);
+    const sendImageToServer = async (imageSrc: string) => {
+        // Convert Data URL to Blob
+        const res = await fetch(imageSrc);
+        const blob = await res.blob();
+
+        // Use FormData to send the file as if it were submitted through a form
+        let formData = new FormData();
+        formData.append('file', blob, 'image.jpg');
+
+        // Send the image to the server via fetch
+        fetch('https://185b-104-234-212-123.ngrok-free.app/predictions', { // Adjust the URL as necessary
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(async (data) => {
+                const currentDate = new Date();
+                const formattedDate = currentDate.toISOString().split('T')[0]; // Gets the date part only
+                const formattedTime = currentDate.toTimeString().split(' ')[0]; // Gets the time part only
+                const currentHour = currentDate.getHours();
+                data.json()
+                const itemTime = moment(formattedTime);
+                const eightAM = itemTime.clone().set({hour: 8, minute: 0, second: 0, millisecond: 0});
+
+                console.log('Success:', data.json());
+                await fetch('/api/attendance', {
+                    method: "POST",
+                    body: JSON.stringify({
+                        name: data.toString() ,
+                        profile: "imageSrc",
+                        time: new Date(),
+                        date: new Date(),
+                        status: itemTime.isAfter(eightAM) ? "Late": "Early"
+                    })
+                })
+                alert(`${data} attendance has been taken`)
+
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    };
+
+    const capture = async () => {
         const imageSrc = webcamRef.current?.getScreenshot();
         if (imageSrc) {
-            // You can now use the imageSrc for face recognition or other processing
             console.log(imageSrc);
+            setImage(imageSrc);
+            await sendImageToServer(imageSrc)
         } else {
             console.error('Failed to capture image');
         }
     };
+
     return (
       <div
           style={{
@@ -24,7 +74,6 @@ export default function Home() {
             backgroundPosition: 'center',
             minHeight: '100vh',
               paddingBottom: '50px'
-              // Ensure the background covers the entire viewport height
           }}
           className='flex flex-col h-screen w-full justify-center items-center bg-gray-900 bg-opacity-75'
       >
@@ -42,7 +91,8 @@ export default function Home() {
                           screenshotFormat="image/jpeg"
                       />
                       <Button className={'mx-auto'} onClick={capture}>
-                          <div className="flex items-center gap-2"><RiCamera2Fill></RiCamera2Fill>
+                          <div className="flex items-center gap-2">
+                              <RiCamera2Fill></RiCamera2Fill>
                               Take Attendance
                           </div>
                       </Button>

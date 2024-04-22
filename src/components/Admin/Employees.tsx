@@ -74,7 +74,6 @@ export default function Employees({ employees}: {employees: Employee[]}){
                             <TableHeaderCell>Name</TableHeaderCell>
                             <TableHeaderCell>Department</TableHeaderCell>
                             <TableHeaderCell>Role</TableHeaderCell>
-                            <TableHeaderCell>Salary</TableHeaderCell>
                             <TableHeaderCell>Start Date</TableHeaderCell>
                             <TableHeaderCell>Actions</TableHeaderCell>
 
@@ -112,10 +111,7 @@ export default function Employees({ employees}: {employees: Employee[]}){
                                     <div>{item.role}
                                     </div>
                                 </TableCell>
-                                <TableCell>
-                                    <div>{item.salary}
-                                    </div>
-                                </TableCell>
+
                                 <TableCell>
                                     <div>{item.email}
                                     </div>
